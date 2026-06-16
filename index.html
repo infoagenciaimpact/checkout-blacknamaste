@@ -583,13 +583,9 @@
         }
       };
 
-      const res = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://api.mercadopago.com/v1/payments'), {
+      const res = await fetch('/criar-pix', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + MP_ACCESS_TOKEN,
-          'X-Idempotency-Key': 'bkn_' + Date.now()
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mpBody)
       });
 
@@ -660,8 +656,8 @@
       if (tentativas > 60) { clearInterval(pollingInterval); return; }
 
       try {
-        const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(`https://api.mercadopago.com/v1/payments/${transactionId}`), {
-          headers: { 'Authorization': 'Bearer ' + MP_ACCESS_TOKEN }
+        const r = await fetch(`/consultar-pix?id=${transactionId}`, {
+          
         });
         const d = await r.json();
 
