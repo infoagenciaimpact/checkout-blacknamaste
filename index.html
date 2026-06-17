@@ -214,16 +214,16 @@ function crc16(str) {
 }
 
 function pad(id, value) {
-  var len = String(value.length).padStart(2,'0');
-  return id + len + value;
+  return id + String(value.length).padStart(2,'0') + value;
 }
 
 function gerarPix() {
   var amount  = VALOR.toFixed(2);
+  var txid    = Math.random().toString(36).substring(2,15).toUpperCase();
   var chave   = pad('01', PIX_KEY);
   var gui     = pad('00', 'br.gov.bcb.pix') + chave;
   var merchant = pad('26', gui);
-  var addData  = pad('62', pad('05', '***'));
+  var addData  = pad('62', pad('05', txid));
 
   var payload =
     pad('00','01') +
@@ -272,29 +272,29 @@ function handleBuy() {
   var cel    = document.getElementById('cel').value.trim();
 
   if (!nome) { showErro('Preencha seu nome completo.'); return; }
-  if (!email || email.indexOf('@') < 0) { showErro('Informe um email válido.'); return; }
-  if (email !== email2) { showErro('Os emails não coincidem.'); return; }
-  if (cpf.replace(/\D/g,'').length < 11) { showErro('CPF inválido.'); return; }
-  if (cel.replace(/\D/g,'').length < 10) { showErro('Celular inválido.'); return; }
+  if (!email || email.indexOf('@') < 0) { showErro('Informe um email valido.'); return; }
+  if (email !== email2) { showErro('Os emails nao coincidem.'); return; }
+  if (cpf.replace(/\D/g,'').length < 11) { showErro('CPF invalido.'); return; }
+  if (cel.replace(/\D/g,'').length < 10) { showErro('Celular invalido.'); return; }
 
   var pixCode = gerarPix();
   mostrarPix(pixCode, email);
 }
 
 function mostrarPix(pixCode, email) {
-  var html = '<div style="text-align:center;">';
-  html += '<div style="font-size:15px;font-weight:700;color:#111;margin-bottom:6px;">Pague com PIX</div>';
-  html += '<div style="font-size:12px;color:#888;margin-bottom:12px;">Escaneie o QR Code ou copie o código</div>';
-  html += '<div id="qrDiv" style="display:flex;justify-content:center;margin-bottom:14px;"></div>';
-  html += '<div style="background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:12px;">';
-  html += '<div id="pixTxt" style="font-size:9px;color:#555;word-break:break-all;line-height:1.5;">' + pixCode + '</div>';
-  html += '</div>';
-  html += '<button id="btnCopiar" onclick="copiarPix()" style="width:100%;background:#32bcad;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">📋 Copiar código PIX</button>';
-  html += '<a href="https://wa.me/' + WHATSAPP + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:#25D366;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">💬 Suporte via WhatsApp</a>';
-  html += '<div style="font-size:11px;color:#aaa;margin-top:10px;">Acesso enviado para: <strong>' + email + '</strong></div>';
-  html += '</div>';
+  var conteudo = '<div style="text-align:center;">';
+  conteudo += '<div style="font-size:15px;font-weight:700;color:#111;margin-bottom:6px;">Pague com PIX</div>';
+  conteudo += '<div style="font-size:12px;color:#888;margin-bottom:12px;">Escaneie o QR Code ou copie o codigo</div>';
+  conteudo += '<div id="qrDiv" style="display:flex;justify-content:center;margin-bottom:14px;"></div>';
+  conteudo += '<div style="background:#f5f5f5;border-radius:8px;padding:10px;margin-bottom:12px;">';
+  conteudo += '<div id="pixTxt" style="font-size:9px;color:#555;word-break:break-all;line-height:1.5;">' + pixCode + '</div>';
+  conteudo += '</div>';
+  conteudo += '<button id="btnCopiar" onclick="copiarPix()" style="width:100%;background:#32bcad;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">Copiar codigo PIX</button>';
+  conteudo += '<a href="https://wa.me/' + WHATSAPP + '" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:#25D366;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">Suporte via WhatsApp</a>';
+  conteudo += '<div style="font-size:11px;color:#aaa;margin-top:10px;">Acesso enviado para: <strong>' + email + '</strong></div>';
+  conteudo += '</div>';
 
-  abrirModal(html);
+  abrirModal(conteudo);
 
   setTimeout(function() {
     if (typeof QRCode !== 'undefined') {
@@ -313,9 +313,9 @@ function copiarPix() {
   var txt = document.getElementById('pixTxt').textContent;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(txt).then(function() {
-      document.getElementById('btnCopiar').textContent = '✅ Copiado!';
+      document.getElementById('btnCopiar').textContent = 'Copiado!';
       setTimeout(function() {
-        document.getElementById('btnCopiar').textContent = '📋 Copiar código PIX';
+        document.getElementById('btnCopiar').textContent = 'Copiar codigo PIX';
       }, 2500);
     });
   } else {
@@ -325,9 +325,9 @@ function copiarPix() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    document.getElementById('btnCopiar').textContent = '✅ Copiado!';
+    document.getElementById('btnCopiar').textContent = 'Copiado!';
     setTimeout(function() {
-      document.getElementById('btnCopiar').textContent = '📋 Copiar código PIX';
+      document.getElementById('btnCopiar').textContent = 'Copiar codigo PIX';
     }, 2500);
   }
 }
@@ -342,12 +342,12 @@ function closeModal() {
 }
 
 function showErro(msg) {
-  var html = '<div style="padding:16px 0;text-align:center;">';
-  html += '<div style="font-size:32px;margin-bottom:10px;">⚠️</div>';
-  html += '<div style="font-size:14px;font-weight:700;color:#e05252;margin-bottom:12px;">' + msg + '</div>';
-  html += '<button onclick="closeModal()" style="background:#c8820a;color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;cursor:pointer;">OK</button>';
-  html += '</div>';
-  abrirModal(html);
+  var conteudo = '<div style="padding:16px 0;text-align:center;">';
+  conteudo += '<div style="font-size:32px;margin-bottom:10px;">!</div>';
+  conteudo += '<div style="font-size:14px;font-weight:700;color:#e05252;margin-bottom:12px;">' + msg + '</div>';
+  conteudo += '<button onclick="closeModal()" style="background:#c8820a;color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:14px;cursor:pointer;">OK</button>';
+  conteudo += '</div>';
+  abrirModal(conteudo);
 }
 
 function abrirWhatsapp() {
