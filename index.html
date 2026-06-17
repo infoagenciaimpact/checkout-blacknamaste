@@ -196,8 +196,8 @@
 
 <script>
 var PIX_KEY  = 'efef7a15-8654-4b17-ba50-d516033f4347';
-var PIX_NAME = 'CAROL DOS CILIOS';
-var PIX_CITY = 'SAO PAULO';
+var PIX_NAME = 'Carol dos Cilios';
+var PIX_CITY = 'Sao Paulo';
 var VALOR    = 247.00;
 var WHATSAPP = '5511920096589';
 
@@ -221,7 +221,7 @@ function pad(id, value) {
 function gerarPix() {
   var amount  = VALOR.toFixed(2);
   var chave   = pad('01', PIX_KEY);
-  var gui     = pad('00', 'BR.GOV.BCB.PIX') + chave;
+  var gui     = pad('00', 'br.gov.bcb.pix') + chave;
   var merchant = pad('26', gui);
   var addData  = pad('62', pad('05', '***'));
 
