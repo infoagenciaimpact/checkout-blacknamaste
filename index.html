@@ -450,7 +450,7 @@
   </p>
   <div class="copyright">
     Hotmart © 2026 - Todos os direitos reservados<br/>
-    2026-06-15T01:02:53.000Z &nbsp;REF.
+    2026-06-18T19:00:00.000Z &nbsp;REF.
   </div>
 </div>
 
@@ -630,10 +630,17 @@
         <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:4px;">Pague com PIX</div>
         <div style="font-size:12px;color:#888;margin-bottom:14px;">Escaneie o QR Code ou copie o código</div>
         <div id="qrcode" style="display:flex;justify-content:center;margin-bottom:14px;"></div>
-        <div style="background:#f4f4f4;border-radius:8px;padding:10px;margin-bottom:12px;position:relative;">
-          <div id="pixCode" style="font-size:10px;color:#555;word-break:break-all;max-height:60px;overflow:hidden;line-height:1.5;">${payload}</div>
+        <div style="background:#f0f9f7;border:1.5px solid #32bcad;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+          <div style="font-size:10px;font-weight:700;color:#32bcad;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase;">Código Pix Copia e Cola</div>
+          <div id="pixCode" style="font-size:9px;color:#333;word-break:break-all;line-height:1.6;font-family:monospace;background:#fff;border-radius:6px;padding:8px;border:1px solid #ddd;">${payload}</div>
+          <div style="margin-top:8px;font-size:9.5px;color:#666;">
+            <b>Beneficiário:</b> INSTITUTO RICARDO MELO<br/>
+            <b>Instituição:</b> Banco Central do Brasil (PIX)<br/>
+            <b>Tipo de chave:</b> Chave aleatória<br/>
+            <b>Valor:</b> R$ 397,00
+          </div>
         </div>
-        <button onclick="copiarPix('${payload.replace(/'/g,"\\'")}' )" style="width:100%;background:#32bcad;color:#fff;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;">📋 Copiar código PIX</button>
+        <button id="btnCopiarPix" onclick="copiarPix('${payload.replace(/'/g,"\\'")}' )" style="width:100%;background:#32bcad;color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;margin-bottom:10px;letter-spacing:.3px;">📋 Copiar código PIX</button>
         <div id="statusPix" style="font-size:12px;color:#888;margin-top:4px;">⏳ Aguardando pagamento...</div>
         <div style="font-size:11px;color:#aaa;margin-top:8px;">O acesso será enviado para:<br><strong style="color:#555;">${email}</strong></div>
       </div>
@@ -687,11 +694,23 @@
   }
 
   function copiarPix(texto) {
-    navigator.clipboard.writeText(texto).then(() => {
-      const btn = event.target;
-      btn.textContent = '✅ Copiado!';
-      setTimeout(() => { btn.textContent = '📋 Copiar código PIX'; }, 2500);
-    });
+    var btn = document.getElementById('btnCopiarPix');
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(texto).then(function() {
+        if (btn) { btn.textContent = '✅ Copiado!'; setTimeout(function(){ btn.textContent = '📋 Copiar código PIX'; }, 2500); }
+      }).catch(function() { _copiarFallback(texto, btn); });
+    } else {
+      _copiarFallback(texto, btn);
+    }
+  }
+  function _copiarFallback(texto, btn) {
+    var el = document.createElement('textarea');
+    el.value = texto;
+    el.style.position = 'fixed'; el.style.left = '-9999px';
+    document.body.appendChild(el); el.focus(); el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    if (btn) { btn.textContent = '✅ Copiado!'; setTimeout(function(){ btn.textContent = '📋 Copiar código PIX'; }, 2500); }
   }
 
   // ── HELPERS MODAL ──────────────────────────────
